@@ -1,0 +1,59 @@
+---
+import "+style@font-setup.css";
+import "+style@globals.css";
+
+interface Props {
+    title: string;
+    description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content="/logo.png" />
+        <link rel="icon" href="/logo.png" />
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+        <meta name="generator" content={Astro.generator} />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        />
+        <script is:inline>
+            let initial = localStorage.getItem("theme");
+            if (initial === null) {
+                initial = window.matchMedia("(prefers-color-scheme: dark)")
+                    .matches
+                    ? "dark"
+                    : "light";
+            }
+            document.documentElement.classList.add(initial);
+
+            const root = document.querySelector(":root");
+            if (initial === "dark") {
+                root.style.setProperty("--from", "#2c243c");
+                root.style.setProperty("--via", "#241c3c");
+                root.style.setProperty("--to", "#181526");
+                root.style.setProperty("--thumb", "#4d485e ");
+            } else {
+                root.style.setProperty("--from", "#e8dcf9");
+                root.style.setProperty("--via", "#e9e5fe");
+                root.style.setProperty("--to", "white");
+                root.style.setProperty("--thumb", "#c7c5d2");
+            }
+        </script>
+    </head>
+    <body class="dark:text-white">
+        <span
+            class="h-screen w-full fixed top-0 left-0 -z-[1] bg-gradient-to-b from-[#e8dcf9] via-[#e9e5fe] to-white dark:from-[#2c243c] dark:via-[#241c3c] dark:to-[#181526]"
+        ></span>
+        <slot />
+    </body>
+</html>

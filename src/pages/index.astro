@@ -1,0 +1,14 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "+component@Navbar.svelte";
+import Main from "+component@sections/main.astro";
+---
+
+<Layout
+    title="NaviTheCoderboi | portofolio"
+    description="Hello! I'm NaviTheCoderboi, a developer from India. Welcome to my portfolio! you can read about me here and my blogs too."
+>
+    <Navbar client:only="svelte" />
+    <Main />
+    <div class="h-screen" id="about">about</div>
+</Layout>

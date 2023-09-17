@@ -1,0 +1,15 @@
+{
+    "eslint.validate": [
+        "javascript",
+        "javascriptreact",
+        "astro", // Enable .astro
+        "typescript", // Enable .ts
+        "typescriptreact" // Enable .tsx
+    ],
+    "editor.tabSize": 4,
+    "prettier.documentSelectors": ["**/*.astro"],
+    "[astro]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "typescript.tsdk": "node_modules/typescript/lib"
+}

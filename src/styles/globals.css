@@ -1,0 +1,14 @@
+html {
+    scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar,
+::-webkit-scrollbar-track {
+    width: 8px;
+    background: linear-gradient(to bottom, var(--from), var(--via), var(--to));
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--thumb);
+    border-radius: 4px;
+}
