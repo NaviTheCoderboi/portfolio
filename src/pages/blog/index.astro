@@ -1,12 +1,12 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import Navbar from "+component@Navbar.svelte";
+import Navbar from "+component@Navbar.astro";
 ---
 
 <Layout
     title="NaviTheCoderboi | portofolio"
     description="Hello! I'm NaviTheCoderboi, a developer from India. Welcome to my portfolio! you can read about me here and my blogs too."
 >
-    <Navbar client:only="svelte" path={Astro.url.password} />
+    <Navbar />
     <h1 class="text-2xl font-bold">Page</h1>
 </Layout>

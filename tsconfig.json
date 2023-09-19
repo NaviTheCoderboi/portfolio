@@ -6,8 +6,8 @@
             "+layout@*": ["src/layouts/*"],
             "+component@*": ["src/components/*"],
             "+style@*": ["src/styles/*"],
-            "+assets@*": ["src/assets/*"],
-            "+scripts*": ["src/scripts/*"]
+            "+asset@*": ["src/assets/*"],
+            "+script*": ["src/scripts/*"]
         },
         "plugins": [
             {

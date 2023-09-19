@@ -1,0 +1,72 @@
+---
+import heroBG from "+asset@hero-bg.png";
+import astranaut from "+asset@astranaut.svg";
+import { Image } from "astro:assets";
+---
+
+<div
+    class="flex justify-center items-center relative min-h-screen w-full"
+    id="home"
+>
+    <Image
+        src={heroBG}
+        alt="hero background"
+        class="-z-[1] absolute top-0 left-0 w-full h-full object-cover hidden dark:block"
+    />
+    <div class="flex gap-10 w-4/5 md:w-[75%] h-full">
+        <div class="w-1/2 h-full flex flex-col gap-5 entry">
+            <span
+                class="welcome-btn w-fit text-2xl font-semibold px-6 py-3 rounded-3xl drop"
+            >
+                Welcome to my site!</span
+            >
+            <span class="text-6xl font-[900]"> Hello! I'm Navinder</span>
+        </div>
+        <div class="w-1/2 py-12 px-4">
+            <Image
+                src={astranaut}
+                alt="astranaut"
+                class="w-full h-full object-contain floating"
+            />
+        </div>
+    </div>
+</div>
+
+<style>
+    .entry {
+        animation: entry 1s ease-in-out 1;
+    }
+
+    .welcome-btn {
+        background: linear-gradient(90.21deg, #aa367c80, #4a2fbd80);
+    }
+
+    .floating {
+        animation:
+            floating 3s ease-in-out infinite,
+            entry 1s ease-in-out 1;
+    }
+
+    @keyframes floating {
+        from {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(40px);
+        }
+        to {
+            transform: translateY(0px);
+        }
+    }
+
+    @keyframes entry {
+        from {
+            opacity: 0;
+            scale: 0.5;
+        }
+        to {
+            opacity: 1;
+            scale: 1;
+        }
+    }
+</style>

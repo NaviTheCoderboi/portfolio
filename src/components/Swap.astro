@@ -1,0 +1,62 @@
+<span
+    class="text-[#FF5D01] flex justify-center items-center relative h-12 w-12"
+>
+    <button
+        class="duration-500 absolute top-0 left-0 material-symbols-outlined text-5xl"
+    >
+        dark_mode
+    </button>
+    <button
+        class="duration-500 absolute top-0 left-0 material-symbols-outlined text-5xl"
+    >
+        light_mode
+    </button>
+</span>
+
+<script is:inline>
+    const initial_theme = document.documentElement.classList.contains("dark")
+        ? "dark"
+        : "light";
+    let theme = initial_theme;
+
+    const root_element = document.querySelector(":root");
+
+    const theme_buttons = document.querySelectorAll("span button");
+
+    if (theme_buttons) {
+        if (theme === "dark") {
+            theme_buttons[0].classList.add("hidden");
+            theme_buttons[1].classList.remove("hidden");
+        } else {
+            theme_buttons[0].classList.remove("hidden");
+            theme_buttons[1].classList.add("hidden");
+        }
+
+        theme_buttons.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                if (theme === "dark") {
+                    theme_buttons[0].classList.remove("hidden");
+                    theme_buttons[1].classList.add("hidden");
+                    document.documentElement.classList.remove("dark");
+                    window.localStorage.theme = "light";
+                    root_element.style.setProperty("--from", "#e8dcf9");
+                    root_element.style.setProperty("--via", "#e9e5fe");
+                    root_element.style.setProperty("--to", "white");
+                    root_element.style.setProperty("--thumb", "#c7c5d2");
+                    theme = "light";
+                } else {
+                    theme_buttons[0].classList.add("hidden");
+                    theme_buttons[1].classList.remove("hidden");
+                    document.documentElement.classList.add("dark");
+                    window.localStorage.theme = "dark";
+                    document.documentElement.classList.add("dark");
+                    root_element.style.setProperty("--from", "#2c243c");
+                    root_element.style.setProperty("--via", "#241c3c");
+                    root_element.style.setProperty("--to", "#181526");
+                    root_element.style.setProperty("--thumb", "#4d485e ");
+                    theme = "dark";
+                }
+            });
+        });
+    }
+</script>
