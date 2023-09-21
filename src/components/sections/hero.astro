@@ -4,7 +4,7 @@ import astranaut from "+asset@astranaut.svg";
 import { Image } from "astro:assets";
 ---
 
-<div
+<section
     class="flex justify-center items-center relative min-h-screen w-full"
     id="home"
 >
@@ -13,16 +13,40 @@ import { Image } from "astro:assets";
         alt="hero background"
         class="-z-[1] absolute top-0 left-0 w-full h-full object-cover hidden dark:block"
     />
-    <div class="flex gap-10 w-4/5 md:w-[75%] h-full">
-        <div class="w-1/2 h-full flex flex-col gap-5 entry">
+    <div class="flex flex-col lg:flex-row gap-10 w-4/5 lg:w-[75%] h-full">
+        <div
+            class="h-1/2 w-full lg:w-1/2 lg:h-full flex flex-col gap-5 entry lg:py-32"
+        >
             <span
-                class="welcome-btn w-fit text-2xl font-semibold px-6 py-3 rounded-3xl drop"
+                class="welcome-btn w-fit text-lg lg:text-2xl font-semibold px-6 py-3 rounded-3xl text-white"
             >
                 Welcome to my site!</span
             >
-            <span class="text-6xl font-[900]"> Hello! I'm Navinder</span>
+            <span class="text-4xl lg:text-6xl font-[900]">
+                Hello! I'm Navinder</span
+            >
+            <span
+                class="text-2xl font-normal text-gray-700 dark:text-slate-300"
+            >
+                Hello! I am Navinder Singh, a high-school student from India. I
+                am currently in 9th grade. I want to be a doctor. Coding is my
+                hobby and i like coding in my free time. I like to write code in
+                typescript, idk why i got sticked to it when i first time used
+                it. physics, biology and computer are my favorite subjects.
+            </span>
+            <span class="flex items-center justify-start lg:justify-end">
+                <button
+                    class="flex bg-gradient-to-br from-[#12c2e9] via-[#c471ed] to-[#f64f59] p-2 rounded-2xl font-mono font-normal text-lg"
+                >
+                    <a
+                        href="/blog"
+                        class="bg-[#5637e380] p-2 rounded-2xl text-white"
+                        >explore blog</a
+                    >
+                </button>
+            </span>
         </div>
-        <div class="w-1/2 py-12 px-4">
+        <div class="h-1/2 w-full lg:w-1/2 lg:h-full p-2 lg:py-12 lg:px-4">
             <Image
                 src={astranaut}
                 alt="astranaut"
@@ -30,7 +54,7 @@ import { Image } from "astro:assets";
             />
         </div>
     </div>
-</div>
+</section>
 
 <style>
     .entry {
