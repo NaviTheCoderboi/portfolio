@@ -13,9 +13,11 @@ import { Image } from "astro:assets";
         alt="hero background"
         class="-z-[1] absolute top-0 left-0 w-full h-full object-cover hidden dark:block"
     />
-    <div class="flex flex-col lg:flex-row gap-10 w-4/5 lg:w-[75%] h-full">
+    <div
+        class="flex flex-col lg:flex-row gap-5 lg:gap-10 w-4/5 lg:w-[75%] h-full"
+    >
         <div
-            class="h-1/2 w-full lg:w-1/2 lg:h-full flex flex-col gap-5 entry lg:py-32"
+            class="h-1/2 w-full lg:w-1/2 lg:h-full flex flex-col gap-5 entry py-8 lg:py-32"
         >
             <span
                 class="welcome-btn w-fit text-lg lg:text-2xl font-semibold px-6 py-3 rounded-3xl text-white"
@@ -51,6 +53,7 @@ import { Image } from "astro:assets";
                 src={astranaut}
                 alt="astranaut"
                 class="w-full h-full object-contain floating"
+                loading={"eager"}
             />
         </div>
     </div>

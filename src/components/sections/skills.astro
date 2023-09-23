@@ -1,13 +1,282 @@
-<section class="min-h-screen mx-auto w-4/5 lg:w-3/5 py-10 lg:py-32" id="skills">
+---
+interface Languages {
+    name: string;
+    level: number;
+    color: string;
+}
+
+const languages: Languages[] = [
+    {
+        name: "python",
+        level: 85,
+        color: "#fd0a54",
+    },
+    {
+        name: "javascript",
+        level: 80,
+        color: "#ffbc11",
+    },
+    {
+        name: "typescript",
+        level: 75,
+        color: "#0de5a8",
+    },
+    {
+        name: "c++",
+        level: 30,
+        color: "#0de5a8",
+    },
+];
+---
+
+<section
+    class="min-h-screen flex flex-col mx-auto gap-10 w-[95%] lg:w-3/5 py-16 lg:py-24"
+    id="skills"
+>
     <h1 class="mx-auto text-6xl font-semibold w-fit">Skills</h1>
     <p
-        class="mx-auto text-2xl font-normal w-fit text-gray-700 dark:text-slate-300"
+        class="mx-auto text-center text-2xl font-normal w-fit text-gray-700 dark:text-slate-300"
     >
         Below are some of the skills I have acquired over the years. I am always
         learning new things and I am always looking for new challenges. Don't
         forget to check out my <a
             href="#projects"
-            class="text-blue-500 dark:text-blue-400 hover:underline">projects</a
+            class="text-orange-500 dark:text-orange-400 hover:underline"
+            >projects</a
         > to see some of the things I have built.
     </p>
+    <ul
+        class="hidden dark:flex flex-col lg:flex-row gap-32 justify-center items-center px-4 py-10"
+    >
+        <li class="box" style={{ "--clr": "#fd0a54", "--i": "80%" }}>
+            <div class="circle">
+                <h1>80<small>%</small></h1>
+            </div>
+            <h1 class="lang">frontend developer</h1>
+        </li>
+        <li class="box" style={{ "--clr": "#ffbc11", "--i": "65%" }}>
+            <div class="circle">
+                <h1>65<small>%</small></h1>
+            </div>
+            <h1 class="lang">backend developer</h1>
+        </li>
+        <li class="box" style={{ "--clr": "#0de5a8", "--i": "70%" }}>
+            <div class="circle">
+                <h1>70<small>%</small></h1>
+            </div>
+            <h1 class="lang">designer</h1>
+        </li>
+    </ul>
+    <ul
+        class="dark:hidden flex flex-col lg:flex-row gap-32 justify-center items-center px-4 py-10"
+    >
+        <li class="box-light" style={{ "--clr": "#fd0a54", "--i": "80%" }}>
+            <div class="circle-light">
+                <h1>80<small>%</small></h1>
+            </div>
+            <h1 class="lang-light">frontend developer</h1>
+        </li>
+        <li class="box-light" style={{ "--clr": "#ffbc11", "--i": "65%" }}>
+            <div class="circle-light">
+                <h1>65<small>%</small></h1>
+            </div>
+            <h1 class="lang-light">backend developer</h1>
+        </li>
+        <li class="box-light" style={{ "--clr": "#0de5a8", "--i": "70%" }}>
+            <div class="circle-light">
+                <h1>70<small>%</small></h1>
+            </div>
+            <h1 class="lang-light">designer</h1>
+        </li>
+    </ul>
+    <div class="flex flex-col lg:w-4/5 py-6 lg:py-10 px-2 lg:px-4 lg:mx-auto">
+        <table
+            class="table-fixed lg:py-4 lg:px-2 bg-[#e8dcf9] dark:bg-slate-800 rounded-2xl overflow-hidden border-collapse"
+        >
+            <thead>
+                <th
+                    class="text-2xl lg:text-3xl font-light font-mono py-2 lg:py-4 px-1 lg:px-2 text-slate-700 dark:text-slate-200"
+                    >language</th
+                >
+                <th
+                    class="text-2xl lg:text-3xl font-light font-mono py-2 lg:py-4 px-1 lg:px-2 text-slate-700 dark:text-slate-200"
+                    >percentage</th
+                >
+            </thead>
+            <tbody>
+                {
+                    languages.map((lang) => (
+                        <tr class="border-y-pink-300 dark:border-y-slate-600 border-y-[0.5px]">
+                            <td class="p-4 text-slate-800 dark:text-slate-300">
+                                {lang.name}
+                            </td>
+                            <td class="w-full h-full p-4">
+                                <div class="2-full h-full rounded-full bg-[#dccbf4] dark:bg-slate-900">
+                                    <div
+                                        style={{
+                                            backgroundColor: lang.color,
+                                            width: String(lang.level) + "%",
+                                        }}
+                                        class="h-5 rounded-full"
+                                    />
+                                </div>
+                            </td>
+                        </tr>
+                    ))
+                }
+            </tbody>
+        </table>
+    </div>
 </section>
+
+<style>
+    /* dark */
+    .box {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 40px;
+        width: 200px;
+        height: auto;
+        position: relative;
+    }
+
+    .box .circle {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        background: conic-gradient(
+            from 0deg,
+            var(--clr) 0%,
+            var(--clr) 0% var(--i),
+            #333 var(--i),
+            #333 100%
+        );
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .box .circle::after {
+        content: "";
+        position: absolute;
+        inset: -5px;
+        background: conic-gradient(
+            from 0deg,
+            var(--clr) 0%,
+            var(--clr) 0% var(--i),
+            #333 var(--i),
+            #333 100%
+        );
+        filter: blur(20px);
+        border-radius: 50%;
+        z-index: -2;
+    }
+
+    .box .circle::before {
+        content: "";
+        position: absolute;
+        inset: 10px;
+        background-color: #25252b;
+        border-radius: 50%;
+    }
+
+    .box .lang {
+        height: 100px;
+        width: 100%;
+        text-align: center;
+        font-weight: 900;
+        font-size: 2rem;
+        letter-spacing: 3px;
+        transform: uppercase;
+    }
+
+    .box .circle h1 {
+        z-index: 2;
+        font-family: fantasy;
+        font-size: 3rem;
+        letter-spacing: 1.5px;
+    }
+
+    .box .circle h1 small {
+        font-size: 2.5rem;
+        color: rgb(156 163 175);
+    }
+
+    /* light */
+    .box-light {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 40px;
+        width: 200px;
+        height: auto;
+        position: relative;
+    }
+
+    .box-light .circle-light {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        background: conic-gradient(
+            from 0deg,
+            var(--clr) 0%,
+            var(--clr) 0% var(--i),
+            rgb(221 214 254) var(--i),
+            rgb(221 214 254) 100%
+        );
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .box-light .circle-light::after {
+        content: "";
+        position: absolute;
+        inset: -5px;
+        background: conic-gradient(
+            from 0deg,
+            var(--clr) 0%,
+            var(--clr) 0% var(--i),
+            rgb(221 214 254) var(--i),
+            rgb(221 214 254) 100%
+        );
+        filter: blur(20px);
+        border-radius: 50%;
+        z-index: -2;
+    }
+
+    .box-light .circle-light::before {
+        content: "";
+        position: absolute;
+        inset: 10px;
+        background-color: #d3cafc;
+        border-radius: 50%;
+    }
+
+    .box-light .lang-light {
+        height: 100px;
+        width: 100%;
+        text-align: center;
+        font-weight: 900;
+        font-size: 2rem;
+        letter-spacing: 3px;
+        transform: uppercase;
+    }
+
+    .box-light .circle-light h1 {
+        z-index: 2;
+        font-family: fantasy;
+        font-size: 3rem;
+        letter-spacing: 1.5px;
+    }
+
+    .box-light .circle-light h1 small {
+        font-size: 2.5rem;
+        color: rgb(40, 42, 45);
+    }
+</style>
