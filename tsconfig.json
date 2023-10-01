@@ -7,7 +7,7 @@
             "+component@*": ["src/components/*"],
             "+style@*": ["src/styles/*"],
             "+asset@*": ["src/assets/*"],
-            "+script*": ["src/scripts/*"]
+            "+utils@*": ["src/utils/*"]
         },
         "plugins": [
             {

@@ -1,4 +1,7 @@
 ---
+import Icons from "+utils@icons.ts";
+import { Image } from "astro:assets";
+
 interface Languages {
     name: string;
     level: number;
@@ -9,22 +12,22 @@ const languages: Languages[] = [
     {
         name: "python",
         level: 85,
-        color: "#fd0a54",
+        color: "#34D399",
     },
     {
         name: "javascript",
         level: 80,
-        color: "#ffbc11",
+        color: "#FACC15",
     },
     {
         name: "typescript",
         level: 75,
-        color: "#0de5a8",
+        color: "#3B82F6",
     },
     {
         name: "c++",
         level: 30,
-        color: "#0de5a8",
+        color: "#0EA5E9",
     },
 ];
 ---
@@ -127,9 +130,44 @@ const languages: Languages[] = [
             </tbody>
         </table>
     </div>
+    <div class="w-full py-8 px-3">
+        <div class="icons">
+            <div class="slider">
+                {
+                    Icons.map((icon, idx) => (
+                        <Image
+                            src={icon}
+                            alt={idx.toString()}
+                            height={100}
+                            width={100}
+                            class="m-[6px] lg:m-[30px] inline-block w-[60px] h-[60px] lg:h-[100px] lg:w-[100px]"
+                        />
+                    ))
+                }
+            </div>
+        </div>
+    </div>
 </section>
 
 <style>
+    @keyframes slide {
+        from {
+            transform: translateX(0);
+        }
+        to {
+            transform: translateX(-100%);
+        }
+    }
+
+    .icons {
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+    .slider {
+        animation: slide 20s infinite linear;
+    }
+
     /* dark */
     .box {
         display: flex;
@@ -195,7 +233,7 @@ const languages: Languages[] = [
 
     .box .circle h1 {
         z-index: 2;
-        font-family: fantasy;
+        font-family: fantasy, monospace, "Poppins", sans-serif;
         font-size: 3rem;
         letter-spacing: 1.5px;
     }

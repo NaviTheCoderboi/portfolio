@@ -12,3 +12,7 @@ html {
     background-color: var(--thumb);
     border-radius: 4px;
 }
+
+* {
+    transition: color, background-color 0.2s ease-in-out;
+}
