@@ -1,0 +1,60 @@
+---
+import { Image } from "astro:assets";
+import { parseISO, format, formatDistance } from "date-fns";
+import { getCollection } from "astro:content";
+import readingTime from "reading-time";
+
+const blogs = (await getCollection("blog")).sort(
+    (a, b) => a.data.postedOn.valueOf() - b.data.postedOn.valueOf(),
+);
+
+const getReadingTime = (content: any) => {
+    return readingTime(content).text;
+};
+---
+
+<ul class="flex flex-col gap-10 pt-10 pb-20 lg:py-10 px-8 lg:w-[70%] mx-auto">
+    {
+        blogs.map((blog) => (
+            <a
+                class="flex flex-col gap-5 p-3 hover:scale-[1.03] duration-200 rounded-lg bg-[#ddc9f8] dark:bg-[#23262d] border-2 border-transparent hover:border-2 hover:border-pink-300 dark:hover:border-gray-600"
+                href={"/blog/" + blog.slug}
+            >
+                <span class="p-1 text-2xl text-gray-800 dark:text-gray-300 font-mono">
+                    {format(
+                        parseISO(blog.data.postedOn.toISOString()),
+                        "LLLL d, yyyy",
+                    )}
+                </span>
+                <span class="p-2 rounded-lg">
+                    <Image
+                        src={blog.data.banner}
+                        alt={blog.data.banner.src}
+                        class="object-contain rounded-lg"
+                    />
+                </span>
+                <span class="p-1 text-2xl lg:text-4xl font-medium leading-tight">
+                    {blog.data.title}
+                </span>
+                <span class="p-1 text-base lg:text-xl font-normal text-gray-800 dark:text-gray-300">
+                    {blog.data.description}
+                </span>
+                <span class="p-1 flex items-center gap-4">
+                    <span class="text-xs lg:text-base font-normal text-gray-700 dark:text-gray-400">
+                        {getReadingTime(blog.body)}
+                    </span>
+                    <ul class="flex gap-2 text-xs lg:text-base font-normal text-gray-600 dark:text-gray-400/70">
+                        {blog.data.tags.map((tag) => (
+                            <li data-tag={tag}>{tag}</li>
+                        ))}
+                    </ul>
+                    <span class="grow text-xs lg:text-base font-normal text-gray-700 dark:text-gray-400 text-end">
+                        {formatDistance(blog.data.postedOn, new Date(), {
+                            addSuffix: true,
+                        })}
+                    </span>
+                </span>
+            </a>
+        ))
+    }
+</ul>

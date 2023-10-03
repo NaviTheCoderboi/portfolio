@@ -1,0 +1,72 @@
+---
+import Layout from "+layout@BlogLayout.astro";
+import Navbar from "+component@BlogNavbar.astro";
+import { getCollection, getEntry } from "astro:content";
+import Hero from "+component@blog-parts/hero.astro";
+import GoUp from "+component@blog-parts/goUp.astro";
+
+export const getStaticPaths = async () => {
+    const blogs = await getCollection("blog");
+    return blogs.map((blog) => ({
+        params: {
+            blog: blog.slug,
+        },
+        props: {
+            blog,
+        },
+    }));
+};
+
+type BlogType = Awaited<ReturnType<typeof getCollection<"blog">>>[number];
+
+let blog: BlogType;
+
+if (Astro.props.blog) {
+    blog = Astro.props.blog;
+} else if (Astro.params.blog) {
+    blog = (await getEntry("blog", Astro.params.blog)) as BlogType;
+} else {
+    throw new Error("No blog found");
+}
+
+const frontMatter = blog.data;
+
+const { Content, remarkPluginFrontmatter } = await blog.render();
+---
+
+<Layout
+    title={`blog | ${frontMatter.title}`}
+    description={frontMatter.description}
+    og={{
+        title: frontMatter.title,
+        description: frontMatter.description,
+        image: frontMatter.blogBannerImage.src.src,
+        type: "article",
+    }}
+    twitter={{
+        title: frontMatter.title,
+        description: frontMatter.description,
+        image: frontMatter.blogBannerImage.src.src,
+        card: "summary",
+        creator: "@navithecoderboi",
+    }}
+    robots="follow, nocache"
+    theme="#ff5d01"
+    author="NaviTheCoderboi"
+    keywords={[...frontMatter.tags, "blog"]}
+>
+    <Navbar />
+    <article class="w-[88%] lg:w-[55%] mx-auto flex flex-col gap-14 py-8 px-2">
+        <Hero
+            title={frontMatter.title}
+            read={remarkPluginFrontmatter.read}
+            posted_on={frontMatter.postedOn}
+            image={frontMatter.blogBannerImage}
+            tags={frontMatter.tags}
+        />
+        <main class="prose-sm lg:prose-lg dark:prose-invert py-8">
+            <Content />
+        </main>
+    </article>
+    <GoUp />
+</Layout>

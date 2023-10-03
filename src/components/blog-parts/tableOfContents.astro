@@ -1,0 +1,40 @@
+---
+import GoCircle from "+component@symbols/GoCircle.astro";
+import GiPlainCircle from "+component@symbols/GiPlainCircle.astro";
+
+interface Props {
+    headings: {
+        id: string;
+        text: string;
+        depth: number;
+    }[];
+}
+
+const { headings } = Astro.props;
+---
+
+<ul class="flex flex-col gap-3">
+    {
+        headings.map((heading) => (
+            <a
+                href={""}
+                class={`w-fit flex justify-start items-center gap-3 text-xl font-normal text-blue-400 hover:underline hover:text-blue-300 cursor-pointer duration-150 ${
+                    heading.depth == 2
+                        ? "pl-8"
+                        : heading.depth == 3
+                        ? "pl-16"
+                        : ""
+                }`}
+            >
+                {heading.depth == 1 ? (
+                    <GoCircle />
+                ) : heading.depth == 2 ? (
+                    <GiPlainCircle />
+                ) : (
+                    <GiPlainCircle />
+                )}
+                {heading.text}
+            </a>
+        ))
+    }
+</ul>

@@ -1,0 +1,75 @@
+---
+import { Image } from "astro:assets";
+import { format, parseISO } from "date-fns";
+
+interface Props {
+    title: string;
+    read: string;
+    posted_on: Date;
+    image: {
+        src: any;
+        alt: string;
+    };
+    tags: string[];
+}
+
+const { title, read, posted_on, image, tags } = Astro.props;
+
+const colors = [
+    "bg-pink-500",
+    "bg-purple-500",
+    "bg-blue-500",
+    "bg-green-500",
+    "bg-yellow-500",
+    "bg-red-500",
+];
+
+const getRandColor = () => colors[Math.floor(Math.random() * colors.length)];
+---
+
+<header class="flex flex-col gap-12">
+    <span class="flex flex-col gap-4 w-full lg:w-4/5 mx-auto">
+        <h1
+            class="font-bold text-left lg:text-justify text-xl lg:text-5xl leading-[1.35] dark:text-slate-300"
+        >
+            {title}
+        </h1>
+        <ul
+            class="flex gap-3 text-xs lg:text-lg font-normal text-gray-600 dark:text-gray-300"
+        >
+            {
+                tags.map((tag) => (
+                    <li
+                        class={`px-2 py-1 rounded-full text-white ${getRandColor()}`}
+                        data-tag={tag}
+                    >
+                        {tag}
+                    </li>
+                ))
+            }
+        </ul>
+    </span>
+    <Image
+        src={image.src}
+        alt={image.alt}
+        class="object-contain rounded-lg"
+        loading="lazy"
+    />
+    <span
+        class="flex justify-between items-center gap-10 w-full lg:w-4/5 mx-auto"
+    >
+        <span
+            class="inline-flex gap-1 lg:gap-2 items-center text-xs lg:text-base font-semibold text-slate-400"
+        >
+            <span class="text-orange-500">Posted on:</span>
+            <span
+                >{
+                    format(parseISO(posted_on.toISOString()), "LLLL d, yyyy")
+                }</span
+            >
+        </span>
+        <span class="text-pink-500 text-xs lg:text-base font-semibold">
+            {read}
+        </span>
+    </span>
+</header>

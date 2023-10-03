@@ -12,5 +12,9 @@
     ],
     "rules": {
         "semi": [2, "always"]
+    },
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module"
     }
 }

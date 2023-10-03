@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Navbar from "+component@Navbar.astro";
+import Footer from "+component@Footer.astro";
 import Hero from "+component@sections/hero.astro";
 import Skills from "+component@sections/skills.astro";
 import Projects from "+component@sections/projects.astro";
@@ -9,9 +10,29 @@ import Projects from "+component@sections/projects.astro";
 <Layout
     title="NaviTheCoderboi | portofolio"
     description="Hello! I'm NaviTheCoderboi, a developer from India. Welcome to my portfolio! you can read about me here and my blogs too."
+    og={{
+        title: "NaviTheCoderboi | portofolio",
+        description:
+            "Hello! I'm NaviTheCoderboi, a developer from India. Welcome to my portfolio! you can read about me here and my blogs too.",
+        image: "./logo.png",
+        type: "website",
+    }}
+    twitter={{
+        title: "NaviTheCoderboi | portofolio",
+        description:
+            "Hello! I'm NaviTheCoderboi, a developer from India. Welcome to my portfolio! you can read about me here and my blogs too.",
+        image: "./logo.png",
+        card: "summary",
+        creator: "@navithecoderboi",
+    }}
+    robots="follow, nocache"
+    theme="#ff5d01"
+    author="NaviTheCoderboi"
+    keywords={["NaviTheCoderboi", "Navi", "portfolio", "blog"]}
 >
     <Navbar />
     <Hero />
     <Skills />
     <Projects />
+    <Footer />
 </Layout>

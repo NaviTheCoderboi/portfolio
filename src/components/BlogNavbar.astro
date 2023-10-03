@@ -1,0 +1,49 @@
+---
+import logo from "+asset@logo.png?url";
+import logoLight from "+asset@logo-light.png?url";
+import Swap from "+component@Swap.astro";
+import { Image } from "astro:assets";
+---
+
+<nav
+    class="sticky grid place-content-between grid-rows-1 grid-cols-2 md:grid-cols-2 z-50 top-0 left-0 py-3 px-6 backdrop-filter backdrop-blur-sm shadow-md"
+>
+    <div
+        class="flex items-center gap-4 text-4xl font-bold tracking-tighter"
+        id="title"
+    >
+        <Image
+            src={logo}
+            alt="logo"
+            height={70}
+            width={70}
+            class="hidden dark:block"
+        />
+        <Image
+            src={logoLight}
+            alt="logo"
+            height={70}
+            width={70}
+            class="dark:hidden"
+        />
+        <span class="hidden lg:block"> NaviTheCoderboi</span>
+    </div>
+    <div class="flex justify-end items-center gap-8">
+        <a
+            href="/blog"
+            class="hidden md:inline px-4 py-2 rounded-lg bg-slate-200 dark:bg-gray-700 text-xl font-light hover:brightness-110 duration-200 hover:scale-[1.03]"
+        >
+            back
+        </a>
+        <Swap />
+    </div>
+</nav>
+
+<style>
+    #title {
+        background-clip: border-box;
+        background: linear-gradient(to right, #ff5d01, #8b5cf6);
+        -webkit-text-fill-color: transparent;
+        -webkit-background-clip: text;
+    }
+</style>

@@ -47,6 +47,7 @@ const { title, description, og, twitter, robots, theme, author, keywords } =
         <meta name="twitter:description" content={twitter.description} />
         <meta name="twitter:image" content={twitter.image} />
         <meta name="theme-color" content={theme} />
+        <link rel="icon" href="/logo.png" />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
         <meta name="generator" content={Astro.generator} />
@@ -75,10 +76,7 @@ const { title, description, og, twitter, robots, theme, author, keywords } =
             }
         </script>
     </head>
-    <body class="dark:text-white">
-        <span
-            class="h-screen w-full fixed top-0 left-0 -z-[2] bg-gradient-to-b from-[#e8dcf9] via-[#e9e5fe] to-white dark:from-[#2c243c] dark:via-[#241c3c] dark:to-[#181526]"
-        ></span>
+    <body class="bg-white text-black dark:bg-black dark:text-white">
         <slot />
     </body>
 </html>

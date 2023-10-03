@@ -140,7 +140,8 @@ const languages: Languages[] = [
                             alt={idx.toString()}
                             height={100}
                             width={100}
-                            class="m-[6px] lg:m-[30px] inline-block w-[60px] h-[60px] lg:h-[100px] lg:w-[100px]"
+                            loading="lazy"
+                            class="icon m-[6px] lg:m-[30px] inline-block w-[60px] h-[60px] lg:h-[100px] lg:w-[100px]"
                         />
                     ))
                 }
@@ -166,6 +167,15 @@ const languages: Languages[] = [
 
     .slider {
         animation: slide 20s infinite linear;
+    }
+
+    .icons:hover .slider {
+        animation-play-state: paused;
+    }
+
+    .icon:hover {
+        scale: 1.1;
+        transition-duration: 300ms;
     }
 
     /* dark */
