@@ -12,21 +12,23 @@ import { Image } from "astro:assets";
         class="flex items-center gap-4 text-4xl font-bold tracking-tighter"
         id="title"
     >
-        <Image
-            src={logo}
-            alt="logo"
-            height={70}
-            width={70}
-            class="hidden dark:block"
-        />
-        <Image
-            src={logoLight}
-            alt="logo"
-            height={70}
-            width={70}
-            class="dark:hidden"
-        />
-        <span class="hidden lg:block"> NaviTheCoderboi</span>
+        <a href="/" class="grid place-items-center">
+            <Image
+                src={logo}
+                alt="logo"
+                height={70}
+                width={70}
+                class="hidden dark:block"
+            />
+            <Image
+                src={logoLight}
+                alt="logo"
+                height={70}
+                width={70}
+                class="dark:hidden"
+            />
+        </a>
+        <a href="/" class="hidden lg:block"> NaviTheCoderboi</a>
     </div>
     <div class="flex justify-end items-center gap-8">
         <a
