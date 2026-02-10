@@ -1,0 +1,119 @@
+---
+import { identity } from '@lib/site';
+---
+
+<section id="about" class="relative py-(--spacing-section) overflow-hidden" data-scroll-fade>
+	<div class="starfield" aria-hidden="true">
+		<div
+			class="starfield-dot"
+			style="width: 2px; height: 2px; top: 15%; left: 20%; --star-duration: 3s; --star-delay: 0s;"
+		></div>
+		<div
+			class="starfield-dot"
+			style="width: 1px; height: 1px; top: 35%; left: 75%; --star-duration: 4s; --star-delay: 1s;"
+		></div>
+		<div
+			class="starfield-dot"
+			style="width: 1.5px; height: 1.5px; top: 65%; left: 45%; --star-duration: 5s; --star-delay: 0.5s;"
+		></div>
+		<div
+			class="starfield-dot"
+			style="width: 1px; height: 1px; top: 80%; left: 10%; --star-duration: 3.5s; --star-delay: 2s;"
+		></div>
+		<div
+			class="starfield-dot"
+			style="width: 2px; height: 2px; top: 25%; left: 90%; --star-duration: 4.5s; --star-delay: 1.5s;"
+		></div>
+		<div
+			class="starfield-dot"
+			style="width: 1px; height: 1px; top: 50%; left: 60%; --star-duration: 6s; --star-delay: 0.8s;"
+		></div>
+	</div>
+
+	<div
+		class="absolute top-1/2 -translate-y-1/2 -right-32 w-96 h-96 rounded-full border border-slate-deep opacity-40"
+		aria-hidden="true"
+		data-parallax
+		data-parallax-speed="0.08"
+	></div>
+	<div
+		class="absolute top-1/2 -translate-y-1/2 -right-16 w-64 h-64 rounded-full border border-gold-muted/20"
+		aria-hidden="true"
+		data-parallax
+		data-parallax-speed="-0.05"
+	></div>
+
+	<div class="relative max-w-6xl mx-auto px-6">
+		<div data-reveal>
+			<p
+				class="font-mono text-sm tracking-[0.35em] uppercase text-gold-dim mb-4"
+				data-scramble
+				data-scramble-delay="200"
+			>
+				01 / About
+			</p>
+			<div class="gold-rule-animated w-16 mb-12" data-reveal></div>
+		</div>
+
+		<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+			<div class="lg:col-span-5" data-reveal data-reveal-delay="1">
+				<h2
+					class="font-display text-4xl sm:text-5xl text-ivory leading-[1.1] mb-8"
+					data-parallax
+					data-parallax-speed="0.03"
+				>
+					Who am
+					<br>
+					<span class="text-gold italic text-glow-gold">I?</span>
+				</h2>
+				<p class="text-silver text-lg leading-relaxed">{identity.bio}</p>
+			</div>
+
+			<div class="lg:col-span-7 space-y-8" data-reveal data-reveal-delay="2">
+				<div
+					class="group relative border-l border-slate-light pl-8 py-2 transition-all duration-300 hover:border-gold/40"
+					data-tilt-card
+					data-tilt-intensity="5"
+					data-ripple
+				>
+					<div class="tilt-shine" aria-hidden="true"></div>
+					<h3 class="font-display text-xl text-ivory mb-2">Full-Stack Builder</h3>
+					<p class="text-mist text-base leading-relaxed">
+						From writing virtual filesystems and daemon schedulers in C++ to building
+						interactive web apps with Svelte and Astro &mdash; I enjoy working across
+						every layer of the stack.
+					</p>
+				</div>
+
+				<div
+					class="group relative border-l border-slate-light pl-8 py-2 transition-all duration-300 hover:border-gold/40"
+					data-tilt-card
+					data-tilt-intensity="5"
+					data-ripple
+				>
+					<div class="tilt-shine" aria-hidden="true"></div>
+					<h3 class="font-display text-xl text-ivory mb-2">Always Learning</h3>
+					<p class="text-mist text-base leading-relaxed">
+						I pick up new languages and tools for the fun of it. Whether it&rsquo;s
+						systems programming, UI design, or contributing to open-source libraries
+						like melt-ui &mdash; curiosity drives everything I do.
+					</p>
+				</div>
+
+				<div
+					class="group relative border-l border-slate-light pl-8 py-2 transition-all duration-300 hover:border-gold/40"
+					data-tilt-card
+					data-tilt-intensity="5"
+					data-ripple
+				>
+					<div class="tilt-shine" aria-hidden="true"></div>
+					<h3 class="font-display text-xl text-ivory mb-2">Open Source</h3>
+					<p class="text-mist text-base leading-relaxed">
+						Most of what I build ends up on GitHub. I believe in building in the open,
+						sharing what I learn, and contributing back to the tools I use every day.
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

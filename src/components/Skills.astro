@@ -1,0 +1,268 @@
+---
+/** biome-ignore-all lint/suspicious/noDuplicateObjectKeys: ignore */
+
+import { skills } from "@lib/site";
+import { fetchGitHubStats } from "@lib/github";
+
+const ghStats = await fetchGitHubStats();
+
+const metrics = [
+    {
+        value: ghStats.repos,
+        suffix: "",
+        label: "Repositories",
+        statKey: "repos",
+    },
+    {
+        value: ghStats.stars,
+        suffix: "",
+        label: "Stars Earned",
+        statKey: "stars",
+    },
+    {
+        value: ghStats.followers,
+        suffix: "",
+        label: "Followers",
+        statKey: "followers",
+    },
+    {
+        value: skills.reduce((acc, g) => acc + g.items.length, 0),
+        suffix: "",
+        label: "Tools & Languages",
+        statKey: null,
+    },
+];
+---
+
+<section id="skills" class="relative py-(--spacing-section)" data-scroll-fade>
+    <div class="starfield" aria-hidden="true">
+        <div
+            class="starfield-dot"
+            style="width: 1.5px; height: 1.5px; top: 10%; left: 30%; --star-duration: 4s; --star-delay: 0s;"
+        >
+        </div>
+        <div
+            class="starfield-dot"
+            style="width: 1px; height: 1px; top: 25%; left: 80%; --star-duration: 3s; --star-delay: 1.2s;"
+        >
+        </div>
+        <div
+            class="starfield-dot"
+            style="width: 2px; height: 2px; top: 55%; left: 15%; --star-duration: 5s; --star-delay: 0.4s;"
+        >
+        </div>
+        <div
+            class="starfield-dot"
+            style="width: 1px; height: 1px; top: 70%; left: 65%; --star-duration: 3.5s; --star-delay: 2.5s;"
+        >
+        </div>
+        <div
+            class="starfield-dot"
+            style="width: 1.5px; height: 1.5px; top: 85%; left: 50%; --star-duration: 4.5s; --star-delay: 0.8s;"
+        >
+        </div>
+        <div
+            class="starfield-dot"
+            style="width: 1px; height: 1px; top: 40%; left: 95%; --star-duration: 6s; --star-delay: 1.8s;"
+        >
+        </div>
+        <div
+            class="starfield-dot"
+            style="width: 1px; height: 1px; top: 5%; left: 55%; --star-duration: 3.2s; --star-delay: 3s;"
+        >
+        </div>
+        <div
+            class="starfield-dot"
+            style="width: 2px; height: 2px; top: 90%; left: 5%; --star-duration: 5.5s; --star-delay: 0.2s;"
+        >
+        </div>
+    </div>
+
+    <div class="relative max-w-6xl mx-auto px-6">
+        <div data-reveal>
+            <p
+                class="font-mono text-sm tracking-[0.35em] uppercase text-gold-dim mb-4"
+                data-scramble
+                data-scramble-delay="100"
+            >
+                03 / Expertise
+            </p>
+            <div class="gold-rule-animated w-16 mb-6" data-reveal></div>
+        </div>
+
+        <div class="mb-16" data-reveal data-reveal-delay="1">
+            <h2
+                class="font-display text-4xl sm:text-5xl text-ivory leading-[1.1]"
+                data-parallax
+                data-parallax-speed="0.02"
+            >
+                Tools of
+                <br />
+                <span class="text-shimmer italic">the trade</span>
+            </h2>
+        </div>
+
+        <div
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-12"
+        >
+            {
+                skills.map((group, groupIndex) => (
+                    <div data-reveal data-reveal-delay={String(groupIndex + 1)}>
+                        <h3
+                            class="font-mono text-sm tracking-[0.25em] uppercase text-gold-dim mb-6"
+                            data-scramble
+                            data-scramble-delay={String(groupIndex * 150)}
+                        >
+                            {group.category}
+                        </h3>
+                        <ul class="space-y-3" role="list">
+                            {group.items.map((skill, skillIndex) => (
+                                <li class="flex items-center gap-3 group cursor-default">
+                                    <span
+                                        class="w-1 h-1 rounded-full bg-ash transition-all duration-300 group-hover:bg-gold group-hover:shadow-[0_0_8px_rgba(201,168,76,0.4)]"
+                                        aria-hidden="true"
+                                    />
+                                    <span class="text-base text-silver transition-all duration-300 group-hover:text-ivory group-hover:translate-x-1">
+                                        {skill}
+                                    </span>
+                                    <div class="flex-1 h-px bg-slate-light/20 ml-auto relative overflow-hidden">
+                                        <div
+                                            class="absolute inset-y-0 left-0 bg-linear-to-r from-gold-dim/60 to-gold/30 skill-bar-fill"
+                                            style={`--fill-delay: ${(groupIndex * 5 + skillIndex) * 0.06}s; width: ${70 + Math.random() * 30}%`}
+                                            data-reveal
+                                            aria-hidden="true"
+                                        />
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                ))
+            }
+        </div>
+
+        <div class="mt-24 pt-12 border-t border-slate-light/20" data-reveal>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                {
+                    metrics.map((metric) => (
+                        <div
+                            class="group relative bg-slate-deep/60 border border-slate-light/10 rounded-lg p-6 sm:p-8 transition-all duration-300 hover:border-gold/20 hover:bg-slate-deep/80"
+                            data-tilt-card
+                            data-tilt-intensity="4"
+                        >
+                            <div
+                                class="tilt-shine rounded-lg"
+                                aria-hidden="true"
+                            />
+                            <p class="font-display text-4xl sm:text-5xl text-ivory tabular-nums">
+                                <span
+                                    data-count-target={String(metric.value)}
+                                    data-count-suffix={metric.suffix}
+                                    {...(metric.statKey
+                                        ? { "data-github-stat": metric.statKey }
+                                        : {})}
+                                >
+                                    0
+                                </span>
+                            </p>
+                            <p class="text-sm text-mist mt-2 tracking-wider uppercase">
+                                {metric.label}
+                            </p>
+                        </div>
+                    ))
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    const CACHE_KEY = "github-stats-cache";
+    const CACHE_TTL = 60 * 60 * 1000;
+    const GITHUB_USERNAME = "NaviTheCoderboi";
+    const USER_API = `https://api.github.com/users/${GITHUB_USERNAME}`;
+    const REPOS_API = `https://api.github.com/users/${GITHUB_USERNAME}/repos?per_page=100&sort=updated`;
+
+    interface CachedStats {
+        data: { repos: number; stars: number; followers: number };
+        timestamp: number;
+    }
+
+    const getCachedStats = (): CachedStats | null => {
+        try {
+            const raw = localStorage.getItem(CACHE_KEY);
+            if (!raw) return null;
+            const parsed: CachedStats = JSON.parse(raw);
+            if (Date.now() - parsed.timestamp < CACHE_TTL) {
+                return parsed;
+            }
+            return null;
+        } catch {
+            return null;
+        }
+    };
+
+    const applyStats = (stats: {
+        repos: number;
+        stars: number;
+        followers: number;
+    }) => {
+        const els =
+            document.querySelectorAll<HTMLElement>("[data-github-stat]");
+        for (const el of els) {
+            const key = el.dataset.githubStat as keyof typeof stats;
+            if (key in stats) {
+                const value = stats[key];
+                el.dataset.countTarget = String(value);
+                if (el.classList.contains("counting")) {
+                    const suffix = el.dataset.countSuffix || "";
+                    el.textContent = `${value}${suffix}`;
+                }
+            }
+        }
+    };
+
+    const fetchAndCacheStats = async () => {
+        try {
+            const [userRes, reposRes] = await Promise.all([
+                fetch(USER_API, {
+                    headers: { Accept: "application/vnd.github.v3+json" },
+                }),
+                fetch(REPOS_API, {
+                    headers: { Accept: "application/vnd.github.v3+json" },
+                }),
+            ]);
+
+            if (!userRes.ok || !reposRes.ok) return;
+
+            const user = await userRes.json();
+            const repos: { stargazers_count: number }[] = await reposRes.json();
+
+            const totalStars = repos.reduce(
+                (sum: number, repo: { stargazers_count: number }) =>
+                    sum + (repo.stargazers_count || 0),
+                0,
+            );
+
+            const data = {
+                repos: user.public_repos as number,
+                stars: totalStars,
+                followers: user.followers as number,
+            };
+
+            localStorage.setItem(
+                CACHE_KEY,
+                JSON.stringify({ data, timestamp: Date.now() }),
+            );
+
+            applyStats(data);
+        } catch {}
+    };
+
+    const cached = getCachedStats();
+    if (cached) {
+        applyStats(cached.data);
+    } else {
+        fetchAndCacheStats();
+    }
+</script>

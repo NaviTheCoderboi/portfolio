@@ -1,0 +1,151 @@
+---
+import { projects, identity } from "@lib/site";
+---
+
+<section id="work" class="relative py-(--spacing-section)" data-scroll-fade>
+    <div class="relative max-w-6xl mx-auto px-6">
+        <div data-reveal>
+            <p
+                class="font-mono text-sm tracking-[0.35em] uppercase text-gold-dim mb-4"
+                data-scramble
+                data-scramble-delay="100"
+            >
+                02 / Selected Work
+            </p>
+            <div class="gold-rule-animated w-16 mb-6" data-reveal></div>
+        </div>
+
+        <div
+            class="flex flex-col sm:flex-row sm:items-end sm:justify-between mb-16"
+            data-reveal
+            data-reveal-delay="1"
+        >
+            <h2
+                class="font-display text-4xl sm:text-5xl text-ivory leading-[1.1]"
+                data-parallax
+                data-parallax-speed="0.02"
+            >
+                Projects that
+                <br />
+                <span class="text-shimmer italic">define craft</span>
+            </h2>
+            <p class="text-mist text-base mt-4 sm:mt-0 max-w-xs">
+                A few things I've built and shipped recently.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {
+                projects.map((project, index) => (
+                    <a
+                        href={project.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="group relative block bg-slate-deep/50 border border-slate-light/10 p-8 sm:p-10 transition-all duration-500 hover:border-gold/20 hover:bg-slate-deep/80"
+                        data-reveal
+                        data-reveal-delay={String(index + 1)}
+                        data-tilt-card
+                        data-tilt-intensity="6"
+                        data-ripple
+                        data-project-card
+                    >
+                        <div class="tilt-shine" aria-hidden="true" />
+
+                        <span class="absolute top-8 right-8 font-mono text-sm text-ash tabular-nums">
+                            {project.year}
+                        </span>
+
+                        <span class="font-mono text-sm text-gold-dim tracking-wider mb-6 block">
+                            {String(index + 1).padStart(2, "0")}
+                        </span>
+
+                        <h3 class="font-display text-2xl sm:text-3xl text-ivory mb-4 transition-colors duration-300 group-hover:text-gold">
+                            {project.title}
+                        </h3>
+
+                        <p class="text-mist text-base leading-relaxed mb-8 max-w-md">
+                            {project.description}
+                        </p>
+
+                        <div class="flex flex-wrap gap-2 mb-8">
+                            {project.tags.map((tag) => (
+                                <span class="text-xs font-mono tracking-wider uppercase text-ash border border-slate-light/30 px-3 py-1.5 rounded transition-all duration-300 group-hover:border-gold-muted/30 group-hover:text-mist">
+                                    {tag}
+                                </span>
+                            ))}
+                        </div>
+
+                        <div class="flex items-center gap-2 text-gold-dim text-sm tracking-[0.15em] uppercase transition-colors duration-300 group-hover:text-gold">
+                            <span>View on GitHub</span>
+                            <svg
+                                class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-2"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
+                                />
+                            </svg>
+                        </div>
+
+                        <div
+                            class="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 pointer-events-none"
+                            style="background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(201, 168, 76, 0.06), transparent 40%)"
+                            aria-hidden="true"
+                        />
+
+                        <div
+                            class="absolute bottom-0 left-0 right-0 h-px bg-linear-to-r from-transparent via-gold/40 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                            aria-hidden="true"
+                        />
+                    </a>
+                ))
+            }
+        </div>
+
+        <div class="mt-12 text-center" data-reveal>
+            <a
+                href={identity.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="group inline-flex items-center gap-2 text-base text-mist tracking-widest uppercase transition-colors duration-300 hover:text-gold"
+            >
+                <span>View all projects on GitHub</span>
+                <svg
+                    class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    aria-hidden="true"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"></path>
+                </svg>
+            </a>
+            <p class="text-sm text-ash mt-2">
+                These are just a few — there are more where these came from.
+            </p>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.querySelectorAll("[data-project-card]").forEach((card) => {
+        card.addEventListener("mousemove", (e) => {
+            const event = e as MouseEvent;
+            const rect = (card as HTMLElement).getBoundingClientRect();
+            const x = ((event.clientX - rect.left) / rect.width) * 100;
+            const y = ((event.clientY - rect.top) / rect.height) * 100;
+            (card as HTMLElement).style.setProperty("--mouse-x", `${x}%`);
+            (card as HTMLElement).style.setProperty("--mouse-y", `${y}%`);
+        });
+    });
+</script>

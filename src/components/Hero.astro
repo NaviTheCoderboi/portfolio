@@ -1,0 +1,846 @@
+---
+import { identity } from "@lib/site";
+---
+
+<section
+	id="hero"
+	class="relative min-h-screen flex items-center justify-center overflow-hidden"
+>
+	<canvas
+		id="hero-canvas"
+		class="absolute inset-0 w-full h-full"
+		aria-hidden="true"></canvas>
+
+	<div
+		class="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_50%,transparent_0%,var(--color-void)_100%)]"
+		aria-hidden="true"
+	>
+	</div>
+
+	<div
+		id="hero-tilt"
+		class="relative z-10 max-w-5xl mx-auto px-6 text-center"
+		style="transform-style: preserve-3d; will-change: transform;"
+	>
+		<p
+			id="hero-overline"
+			class="font-mono text-sm tracking-[0.35em] uppercase text-gold-dim mb-8 opacity-0"
+			style="transform: translateZ(30px);"
+			data-scramble
+			data-scramble-delay="300"
+		>
+			{identity.title}
+		</p>
+
+		<h1
+			id="hero-title"
+			class="font-display text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-400 text-ivory leading-[0.9] tracking-[-0.02em] mb-6 opacity-0"
+			style="transform: translateZ(60px);"
+		>
+			Navi
+			<br />
+			<span class="text-shimmer italic font-500">TheCoderboi</span>
+		</h1>
+
+		<p
+			id="hero-tagline"
+			class="text-lg sm:text-xl text-silver max-w-xl mx-auto leading-relaxed mb-12 opacity-0"
+			style="transform: translateZ(20px);"
+		>
+			Building things across the stack &mdash; from low-level systems to
+			polished web experiences.
+		</p>
+
+		<div
+			id="hero-cta"
+			class="flex items-center justify-center gap-6 opacity-0"
+			style="transform: translateZ(15px);"
+		>
+			<a
+				href="#work"
+				class="group relative inline-flex items-center gap-3 border border-gold/30 text-gold px-8 py-3.5 text-base tracking-widest uppercase transition-all duration-300 hover:bg-gold/10 hover:border-gold/60 hover:shadow-[0_0_30px_rgba(201,168,76,0.1)] focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-void"
+				data-ripple
+			>
+				<span>View Work</span>
+				<svg
+					class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-2"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+					stroke-width="1.5"
+					aria-hidden="true"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M17.25 8.25L21 12m0 0l-3.75 3.75M21 12H3"></path>
+				</svg>
+			</a>
+			<a
+				href="#contact"
+				class="text-base tracking-widest uppercase text-mist transition-colors duration-300 hover:text-pearl focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-void"
+			>
+				Get in Touch
+			</a>
+		</div>
+	</div>
+
+	<div
+		id="hero-scroll"
+		class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 opacity-0"
+		aria-hidden="true"
+	>
+		<span class="text-xs tracking-[0.3em] uppercase text-ash font-mono"
+			>Scroll</span
+		>
+		<div class="w-px h-8 bg-linear-to-b from-ash to-transparent"></div>
+	</div>
+</section>
+
+<script>
+	const canvas = document.getElementById("hero-canvas") as HTMLCanvasElement;
+	const c = canvas.getContext("2d")!;
+	const hero = document.getElementById("hero")!;
+	const tiltEl = document.getElementById("hero-tilt")!;
+	const prefersReduced = window.matchMedia(
+		"(prefers-reduced-motion: reduce)",
+	).matches;
+
+	let W = 0,
+		H = 0,
+		cx = 0,
+		cy = 0;
+	let mouseX = 0.5,
+		mouseY = 0.5;
+	let smoothMouseX = 0.5,
+		smoothMouseY = 0.5;
+	let time = 0;
+
+	const resize = () => {
+		const dpr = Math.min(window.devicePixelRatio || 1, 2);
+		W = canvas.offsetWidth;
+		H = canvas.offsetHeight;
+		canvas.width = W * dpr;
+		canvas.height = H * dpr;
+		c.setTransform(dpr, 0, 0, dpr, 0, 0);
+		cx = W / 2;
+		cy = H / 2;
+	};
+
+	type V3 = [number, number, number];
+
+	const rotX = (p: V3, a: number): V3 => {
+		const cos = Math.cos(a),
+			sin = Math.sin(a);
+		return [p[0], p[1] * cos - p[2] * sin, p[1] * sin + p[2] * cos];
+	};
+	const rotY = (p: V3, a: number): V3 => {
+		const cos = Math.cos(a),
+			sin = Math.sin(a);
+		return [p[0] * cos + p[2] * sin, p[1], -p[0] * sin + p[2] * cos];
+	};
+	const rotZ = (p: V3, a: number): V3 => {
+		const cos = Math.cos(a),
+			sin = Math.sin(a);
+		return [p[0] * cos - p[1] * sin, p[0] * sin + p[1] * cos, p[2]];
+	};
+
+	const project = (
+		p: V3,
+		fov: number,
+		originX: number,
+		originY: number,
+	): [number, number, number] => {
+		const z = p[2] + fov;
+		const s = fov / Math.max(z, 1);
+		return [originX + p[0] * s, originY + p[1] * s, z];
+	};
+
+	type ShapeGeometry = { vertices: V3[]; edges: [number, number][] };
+
+	const cubeGeometry = (size: number): ShapeGeometry => {
+		const s = size / 2;
+		const v: V3[] = [
+			[-s, -s, -s],
+			[s, -s, -s],
+			[s, s, -s],
+			[-s, s, -s],
+			[-s, -s, s],
+			[s, -s, s],
+			[s, s, s],
+			[-s, s, s],
+		];
+		const e: [number, number][] = [
+			[0, 1],
+			[1, 2],
+			[2, 3],
+			[3, 0],
+			[4, 5],
+			[5, 6],
+			[6, 7],
+			[7, 4],
+			[0, 4],
+			[1, 5],
+			[2, 6],
+			[3, 7],
+		];
+		return { vertices: v, edges: e };
+	};
+
+	const tetrahedronGeometry = (size: number): ShapeGeometry => {
+		const s = size * 0.7;
+		const v: V3[] = [
+			[s, s, s],
+			[s, -s, -s],
+			[-s, s, -s],
+			[-s, -s, s],
+		];
+		const e: [number, number][] = [
+			[0, 1],
+			[0, 2],
+			[0, 3],
+			[1, 2],
+			[1, 3],
+			[2, 3],
+		];
+		return { vertices: v, edges: e };
+	};
+
+	const octahedronGeometry = (size: number): ShapeGeometry => {
+		const s = size * 0.75;
+		const v: V3[] = [
+			[0, s, 0],
+			[0, -s, 0],
+			[s, 0, 0],
+			[-s, 0, 0],
+			[0, 0, s],
+			[0, 0, -s],
+		];
+		const e: [number, number][] = [
+			[0, 2],
+			[0, 3],
+			[0, 4],
+			[0, 5],
+			[1, 2],
+			[1, 3],
+			[1, 4],
+			[1, 5],
+			[2, 4],
+			[4, 3],
+			[3, 5],
+			[5, 2],
+		];
+		return { vertices: v, edges: e };
+	};
+
+	const icosahedronGeometry = (size: number): ShapeGeometry => {
+		const t = size * 0.45;
+		const phi = (1 + Math.sqrt(5)) / 2;
+		const a = t,
+			b = t * phi;
+		const v: V3[] = [
+			[-a, b, 0],
+			[a, b, 0],
+			[-a, -b, 0],
+			[a, -b, 0],
+			[0, -a, b],
+			[0, a, b],
+			[0, -a, -b],
+			[0, a, -b],
+			[b, 0, -a],
+			[b, 0, a],
+			[-b, 0, -a],
+			[-b, 0, a],
+		];
+		const e: [number, number][] = [
+			[0, 1],
+			[0, 5],
+			[0, 7],
+			[0, 10],
+			[0, 11],
+			[1, 5],
+			[1, 7],
+			[1, 8],
+			[1, 9],
+			[2, 3],
+			[2, 4],
+			[2, 6],
+			[2, 10],
+			[2, 11],
+			[3, 4],
+			[3, 6],
+			[3, 8],
+			[3, 9],
+			[4, 5],
+			[4, 9],
+			[4, 11],
+			[5, 9],
+			[5, 11],
+			[6, 7],
+			[6, 8],
+			[6, 10],
+			[7, 8],
+			[7, 10],
+			[8, 9],
+			[10, 11],
+		];
+		return { vertices: v, edges: e };
+	};
+
+	const diamondGeometry = (size: number): ShapeGeometry => {
+		const s = size * 0.5;
+		const h = size * 0.9;
+		const v: V3[] = [
+			[0, h, 0],
+			[s, 0, 0],
+			[0, 0, s],
+			[-s, 0, 0],
+			[0, 0, -s],
+			[0, -h, 0],
+		];
+		const e: [number, number][] = [
+			[0, 1],
+			[0, 2],
+			[0, 3],
+			[0, 4],
+			[5, 1],
+			[5, 2],
+			[5, 3],
+			[5, 4],
+			[1, 2],
+			[2, 3],
+			[3, 4],
+			[4, 1],
+		];
+		return { vertices: v, edges: e };
+	};
+
+	const SHAPE_GENERATORS = [
+		cubeGeometry,
+		tetrahedronGeometry,
+		octahedronGeometry,
+		icosahedronGeometry,
+		diamondGeometry,
+	];
+
+	interface FloatingShape {
+		geometry: ShapeGeometry;
+		x: number;
+		y: number;
+		z: number;
+		rotSpeedX: number;
+		rotSpeedY: number;
+		rotSpeedZ: number;
+		rotAngleX: number;
+		rotAngleY: number;
+		rotAngleZ: number;
+		driftPhaseX: number;
+		driftPhaseY: number;
+		driftAmplitudeX: number;
+		driftAmplitudeY: number;
+		driftSpeedX: number;
+		driftSpeedY: number;
+		size: number;
+		baseAlpha: number;
+		colorVariant: number;
+	}
+
+	const shapes: FloatingShape[] = [];
+	const SHAPE_COUNT = 10;
+	const FOV = 600;
+
+	const initShapes = () => {
+		shapes.length = 0;
+
+		for (let i = 0; i < SHAPE_COUNT; i++) {
+			const genIndex = Math.floor(
+				Math.random() * SHAPE_GENERATORS.length,
+			);
+			const size = 20 + Math.random() * 50;
+			const geometry = SHAPE_GENERATORS[genIndex]!(size);
+
+			let sx: number, sy: number;
+			const angle = Math.random() * Math.PI * 2;
+			const minR = Math.min(W, H) * 0.18;
+			const maxR = Math.min(W, H) * 0.55;
+			const r = minR + Math.random() * (maxR - minR);
+			sx = cx + Math.cos(angle) * r;
+			sy = cy + Math.sin(angle) * r;
+
+			const sz = -150 + Math.random() * 300;
+
+			shapes.push({
+				geometry,
+				x: sx,
+				y: sy,
+				z: sz,
+				rotSpeedX: (Math.random() - 0.5) * 0.012,
+				rotSpeedY: (Math.random() - 0.5) * 0.012,
+				rotSpeedZ: (Math.random() - 0.5) * 0.006,
+				rotAngleX: Math.random() * Math.PI * 2,
+				rotAngleY: Math.random() * Math.PI * 2,
+				rotAngleZ: Math.random() * Math.PI * 2,
+				driftPhaseX: Math.random() * Math.PI * 2,
+				driftPhaseY: Math.random() * Math.PI * 2,
+				driftAmplitudeX: 15 + Math.random() * 40,
+				driftAmplitudeY: 10 + Math.random() * 30,
+				driftSpeedX: 0.15 + Math.random() * 0.3,
+				driftSpeedY: 0.12 + Math.random() * 0.25,
+				size,
+				baseAlpha: 0.15 + Math.random() * 0.35,
+				colorVariant: Math.random() < 0.7 ? 0 : 1,
+			});
+		}
+	};
+
+	interface Particle {
+		x: number;
+		y: number;
+		z: number;
+		vx: number;
+		vy: number;
+		size: number;
+		trail: [number, number][];
+		brightness: number;
+		speed: number;
+		phase: number;
+	}
+
+	const particles: Particle[] = [];
+	const PARTICLE_COUNT = 30;
+	const TRAIL_LENGTH = 8;
+
+	const initParticles = () => {
+		particles.length = 0;
+		for (let i = 0; i < PARTICLE_COUNT; i++) {
+			particles.push({
+				x: Math.random() * W,
+				y: Math.random() * H,
+				z: -100 + Math.random() * 200,
+				vx: (Math.random() - 0.5) * 0.4,
+				vy: (Math.random() - 0.5) * 0.3,
+				size: 0.8 + Math.random() * 2,
+				trail: [],
+				brightness: 0.2 + Math.random() * 0.6,
+				speed: 0.3 + Math.random() * 0.7,
+				phase: Math.random() * Math.PI * 2,
+			});
+		}
+	};
+
+	const drawGlow = (
+		x: number,
+		y: number,
+		radius: number,
+		r: number,
+		g: number,
+		b: number,
+		alpha: number,
+	) => {
+		const grad = c.createRadialGradient(x, y, 0, x, y, radius);
+		grad.addColorStop(0, `rgba(${r},${g},${b},${alpha})`);
+		grad.addColorStop(0.4, `rgba(${r},${g},${b},${alpha * 0.3})`);
+		grad.addColorStop(1, `rgba(${r},${g},${b},0)`);
+		c.fillStyle = grad;
+		c.beginPath();
+		c.arc(x, y, radius, 0, Math.PI * 2);
+		c.fill();
+	};
+
+	let animId: number;
+	let heroScrollOpacity = 1;
+
+	const render = () => {
+		time += 0.008;
+		c.clearRect(0, 0, W, H);
+		c.globalAlpha = heroScrollOpacity;
+
+		smoothMouseX += (mouseX - smoothMouseX) * 0.04;
+		smoothMouseY += (mouseY - smoothMouseY) * 0.04;
+
+		const mxOff = (smoothMouseX - 0.5) * 2;
+		const myOff = (smoothMouseY - 0.5) * 2;
+
+		drawGlow(cx, cy, Math.min(W, H) * 0.5, 201, 168, 76, 0.02);
+		drawGlow(cx, cy, Math.min(W, H) * 0.25, 201, 168, 76, 0.015);
+
+		c.lineCap = "round";
+		c.lineJoin = "round";
+
+		for (const shape of shapes) {
+			shape.rotAngleX += shape.rotSpeedX;
+			shape.rotAngleY += shape.rotSpeedY;
+			shape.rotAngleZ += shape.rotSpeedZ;
+
+			const driftX =
+				Math.sin(time * shape.driftSpeedX + shape.driftPhaseX) *
+				shape.driftAmplitudeX;
+			const driftY =
+				Math.sin(time * shape.driftSpeedY + shape.driftPhaseY) *
+				shape.driftAmplitudeY;
+
+			const mouseInfluenceX = mxOff * 20 * (shape.z > 0 ? 1.2 : 0.6);
+			const mouseInfluenceY = myOff * 15 * (shape.z > 0 ? 1.2 : 0.6);
+
+			const worldX = shape.x + driftX + mouseInfluenceX;
+			const worldY = shape.y + driftY + mouseInfluenceY;
+
+			const projected: [number, number, number][] = [];
+			for (const v of shape.geometry.vertices) {
+				let p: V3 = [...v];
+				p = rotX(p, shape.rotAngleX);
+				p = rotY(p, shape.rotAngleY);
+				p = rotZ(p, shape.rotAngleZ);
+				projected.push(project(p, FOV, worldX, worldY));
+			}
+
+			const shapeDf = FOV / (shape.z + FOV);
+
+			for (const [ai, bi] of shape.geometry.edges) {
+				const a = projected[ai]!;
+				const b = projected[bi]!;
+
+				const avgZ = (a[2] + b[2]) / 2;
+				const edgeDf = FOV / avgZ;
+				const alpha = shape.baseAlpha * Math.min(1, edgeDf) * shapeDf;
+				const lineW = Math.max(0.3, shapeDf * 1.0);
+
+				let strokeColor: string;
+				if (shape.colorVariant === 0) {
+					strokeColor = `rgba(201,168,76,${alpha.toFixed(3)})`;
+				} else {
+					strokeColor = `rgba(140,150,180,${(alpha * 0.7).toFixed(3)})`;
+				}
+
+				c.beginPath();
+				c.moveTo(a[0], a[1]);
+				c.lineTo(b[0], b[1]);
+				c.strokeStyle = strokeColor;
+				c.lineWidth = lineW;
+				c.stroke();
+			}
+
+			for (const p of projected) {
+				const dotAlpha = shape.baseAlpha * 0.6 * shapeDf;
+				const dotSize = Math.max(0.8, shapeDf * 1.5);
+				c.beginPath();
+				c.arc(p[0], p[1], dotSize, 0, Math.PI * 2);
+				if (shape.colorVariant === 0) {
+					c.fillStyle = `rgba(232,210,140,${dotAlpha.toFixed(3)})`;
+				} else {
+					c.fillStyle = `rgba(180,190,210,${(dotAlpha * 0.7).toFixed(3)})`;
+				}
+				c.fill();
+			}
+
+			if (shape.baseAlpha > 0.3) {
+				const glowR = shape.size * 2.5 * shapeDf;
+				if (shape.colorVariant === 0) {
+					drawGlow(
+						worldX,
+						worldY,
+						glowR,
+						201,
+						168,
+						76,
+						0.02 * shapeDf,
+					);
+				} else {
+					drawGlow(
+						worldX,
+						worldY,
+						glowR,
+						140,
+						150,
+						180,
+						0.015 * shapeDf,
+					);
+				}
+			}
+		}
+
+		for (const pt of particles) {
+			pt.x += pt.vx + Math.sin(time * pt.speed + pt.phase) * 0.3;
+			pt.y += pt.vy + Math.cos(time * pt.speed * 0.8 + pt.phase) * 0.2;
+
+			pt.x += mxOff * 0.5;
+			pt.y += myOff * 0.3;
+
+			if (pt.x < -20) pt.x = W + 20;
+			if (pt.x > W + 20) pt.x = -20;
+			if (pt.y < -20) pt.y = H + 20;
+			if (pt.y > H + 20) pt.y = -20;
+
+			const pDf = FOV / (pt.z + FOV);
+
+			const sx = pt.x;
+			const sy = pt.y;
+			pt.trail.unshift([sx, sy]);
+			if (pt.trail.length > TRAIL_LENGTH) pt.trail.pop();
+
+			if (pt.trail.length > 2) {
+				c.beginPath();
+				c.moveTo(pt.trail[0]![0], pt.trail[0]![1]);
+				for (let t = 1; t < pt.trail.length; t++) {
+					c.lineTo(pt.trail[t]![0], pt.trail[t]![1]);
+				}
+				const trailAlpha = pt.brightness * 0.2 * pDf;
+				c.strokeStyle = `rgba(201,168,76,${Math.min(0.3, trailAlpha).toFixed(3)})`;
+				c.lineWidth = Math.max(0.3, pt.size * 0.3 * pDf);
+				c.stroke();
+			}
+
+			const headAlpha = pt.brightness * pDf * 0.5;
+			const headSize = pt.size * pDf * 0.7;
+			c.beginPath();
+			c.arc(sx, sy, Math.min(3, headSize), 0, Math.PI * 2);
+			c.fillStyle = `rgba(232,210,140,${Math.min(0.8, headAlpha).toFixed(3)})`;
+			c.fill();
+
+			if (pt.brightness > 0.5) {
+				drawGlow(
+					sx,
+					sy,
+					headSize * 3,
+					201,
+					168,
+					76,
+					Math.min(0.1, headAlpha * 0.15),
+				);
+			}
+		}
+
+		for (let i = 0; i < shapes.length; i++) {
+			for (let j = i + 1; j < shapes.length; j++) {
+				const a = shapes[i]!;
+				const b = shapes[j]!;
+				const dxAB =
+					a.x +
+					Math.sin(time * a.driftSpeedX + a.driftPhaseX) *
+						a.driftAmplitudeX -
+					(b.x +
+						Math.sin(time * b.driftSpeedX + b.driftPhaseX) *
+							b.driftAmplitudeX);
+				const dyAB =
+					a.y +
+					Math.sin(time * a.driftSpeedY + a.driftPhaseY) *
+						a.driftAmplitudeY -
+					(b.y +
+						Math.sin(time * b.driftSpeedY + b.driftPhaseY) *
+							b.driftAmplitudeY);
+				const dist = Math.sqrt(dxAB * dxAB + dyAB * dyAB);
+				const maxDist = Math.min(W, H) * 0.35;
+
+				if (dist < maxDist) {
+					const lineAlpha = (1 - dist / maxDist) * 0.04;
+					const ax =
+						a.x +
+						Math.sin(time * a.driftSpeedX + a.driftPhaseX) *
+							a.driftAmplitudeX +
+						mxOff * 20;
+					const ay =
+						a.y +
+						Math.sin(time * a.driftSpeedY + a.driftPhaseY) *
+							a.driftAmplitudeY +
+						myOff * 15;
+					const bx =
+						b.x +
+						Math.sin(time * b.driftSpeedX + b.driftPhaseX) *
+							b.driftAmplitudeX +
+						mxOff * 20;
+					const by =
+						b.y +
+						Math.sin(time * b.driftSpeedY + b.driftPhaseY) *
+							b.driftAmplitudeY +
+						myOff * 15;
+					c.beginPath();
+					c.moveTo(ax, ay);
+					c.lineTo(bx, by);
+					c.strokeStyle = `rgba(201,168,76,${lineAlpha.toFixed(4)})`;
+					c.lineWidth = 0.5;
+					c.stroke();
+				}
+			}
+		}
+
+		c.globalAlpha = 1;
+		animId = requestAnimationFrame(render);
+	};
+
+	hero.addEventListener("mousemove", (e) => {
+		const rect = hero.getBoundingClientRect();
+		mouseX = (e.clientX - rect.left) / rect.width;
+		mouseY = (e.clientY - rect.top) / rect.height;
+	});
+
+	hero.addEventListener("mouseleave", () => {
+		mouseX = 0.5;
+		mouseY = 0.5;
+	});
+
+	hero.addEventListener(
+		"touchmove",
+		(e) => {
+			const rect = hero.getBoundingClientRect();
+			const t = e.touches[0]!;
+			mouseX = (t.clientX - rect.left) / rect.width;
+			mouseY = (t.clientY - rect.top) / rect.height;
+		},
+		{ passive: true },
+	);
+
+	hero.addEventListener("touchend", () => {
+		mouseX = 0.5;
+		mouseY = 0.5;
+	});
+
+	if (tiltEl && !prefersReduced) {
+		let tX = 0,
+			tY = 0,
+			cTX = 0,
+			cTY = 0;
+
+		const animTilt = () => {
+			cTX += (tX - cTX) * 0.06;
+			cTY += (tY - cTY) * 0.06;
+			tiltEl.style.transform = `rotateY(${cTX}deg) rotateX(${cTY}deg)`;
+			requestAnimationFrame(animTilt);
+		};
+
+		hero.addEventListener("mousemove", (e) => {
+			const rect = hero.getBoundingClientRect();
+			tX = ((e.clientX - rect.left) / rect.width - 0.5) * 6;
+			tY = -((e.clientY - rect.top) / rect.height - 0.5) * 4;
+		});
+
+		hero.addEventListener("mouseleave", () => {
+			tX = 0;
+			tY = 0;
+		});
+		requestAnimationFrame(animTilt);
+	}
+
+	if (!prefersReduced) {
+		window.addEventListener(
+			"scroll",
+			() => {
+				const scrollY = window.scrollY;
+				const vh = window.innerHeight;
+				heroScrollOpacity = Math.max(0, 1 - scrollY / (vh * 0.6));
+
+				if (tiltEl) {
+					tiltEl.style.opacity = String(heroScrollOpacity);
+				}
+			},
+			{ passive: true },
+		);
+	}
+
+	const animateEntrance = () => {
+		const els = [
+			{
+				id: "hero-overline",
+				delay: 200,
+				duration: 900,
+				yFrom: -25,
+				blur: 0,
+			},
+			{
+				id: "hero-title",
+				delay: 450,
+				duration: 1200,
+				yFrom: 50,
+				blur: 8,
+			},
+			{
+				id: "hero-tagline",
+				delay: 850,
+				duration: 900,
+				yFrom: 30,
+				blur: 0,
+			},
+			{ id: "hero-cta", delay: 1100, duration: 900, yFrom: 25, blur: 0 },
+			{
+				id: "hero-scroll",
+				delay: 1800,
+				duration: 800,
+				yFrom: 15,
+				blur: 0,
+			},
+		];
+
+		for (const { id, delay, duration, yFrom, blur } of els) {
+			const el = document.getElementById(id);
+			if (!el) continue;
+
+			if (prefersReduced) {
+				el.style.opacity = "1";
+				continue;
+			}
+
+			setTimeout(() => {
+				el.style.transition = `opacity ${duration}ms cubic-bezier(0.16,1,0.3,1), transform ${duration}ms cubic-bezier(0.16,1,0.3,1), filter ${duration}ms cubic-bezier(0.16,1,0.3,1)`;
+				el.style.transform += ` translateY(${yFrom}px)`;
+				if (blur) el.style.filter = `blur(${blur}px)`;
+
+				el.offsetHeight;
+
+				el.style.opacity = "1";
+				el.style.transform = el.style.transform.replace(
+					`translateY(${yFrom}px)`,
+					"translateY(0px)",
+				);
+				if (blur) el.style.filter = "blur(0px)";
+			}, delay);
+		}
+	};
+
+	resize();
+	initShapes();
+	initParticles();
+
+	if (!prefersReduced) {
+		render();
+	} else {
+		time = 1;
+		drawGlow(cx, cy, Math.min(W, H) * 0.5, 201, 168, 76, 0.02);
+
+		for (const shape of shapes) {
+			const projected: [number, number, number][] = [];
+			const shapeDf = FOV / (shape.z + FOV);
+
+			for (const v of shape.geometry.vertices) {
+				let p: V3 = [...v];
+				p = rotX(p, shape.rotAngleX);
+				p = rotY(p, shape.rotAngleY);
+				projected.push(project(p, FOV, shape.x, shape.y));
+			}
+
+			for (const [ai, bi] of shape.geometry.edges) {
+				const a = projected[ai]!;
+				const b = projected[bi]!;
+				const alpha = shape.baseAlpha * shapeDf;
+				c.beginPath();
+				c.moveTo(a[0], a[1]);
+				c.lineTo(b[0], b[1]);
+				c.strokeStyle = `rgba(201,168,76,${alpha.toFixed(3)})`;
+				c.lineWidth = 0.5;
+				c.stroke();
+			}
+		}
+	}
+
+	animateEntrance();
+
+	let resizeTimer: ReturnType<typeof setTimeout>;
+	window.addEventListener("resize", () => {
+		clearTimeout(resizeTimer);
+		resizeTimer = setTimeout(() => {
+			if (!prefersReduced) cancelAnimationFrame(animId);
+			resize();
+			initShapes();
+			initParticles();
+			if (!prefersReduced) render();
+		}, 100);
+	});
+</script>

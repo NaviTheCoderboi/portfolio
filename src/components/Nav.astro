@@ -1,0 +1,170 @@
+---
+const navLinks = [
+	{ href: "#about", label: "About" },
+	{ href: "#work", label: "Work" },
+	{ href: "#skills", label: "Skills" },
+	{ href: "#contact", label: "Contact" },
+];
+---
+
+<nav
+	id="main-nav"
+	class="fixed top-0 left-0 right-0 z-50"
+	style="transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.5s ease, backdrop-filter 0.5s ease, border-color 0.5s ease; border-bottom: 1px solid transparent;"
+	aria-label="Primary navigation"
+>
+	<div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
+		<a
+			href="#hero"
+			class="font-display text-xl text-ivory tracking-wide transition-colors duration-300 hover:text-gold focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-void"
+			aria-label="Go to top"
+		>
+			Navi<span class="text-gold italic ml-0.5">.</span>
+		</a>
+
+		<ul class="hidden sm:flex items-center gap-8" role="list">
+			{
+				navLinks.map((link) => (
+					<li>
+						<a
+							href={link.href}
+							class="text-sm tracking-[0.2em] uppercase text-mist transition-colors duration-300 hover:text-gold focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-void"
+						>
+							{link.label}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+
+		<button
+			id="mobile-menu-toggle"
+			class="sm:hidden flex flex-col gap-1.5 p-2 -mr-2"
+			aria-label="Open navigation menu"
+			aria-expanded="false"
+			aria-controls="mobile-menu"
+		>
+			<span
+				class="block w-5 h-px bg-pearl transition-transform duration-300 origin-center"
+				id="menu-line-1"></span>
+			<span
+				class="block w-5 h-px bg-pearl transition-opacity duration-300"
+				id="menu-line-2"></span>
+			<span
+				class="block w-5 h-px bg-pearl transition-transform duration-300 origin-center"
+				id="menu-line-3"></span>
+		</button>
+	</div>
+
+	<div
+		id="mobile-menu"
+		class="sm:hidden overflow-hidden max-h-0 transition-[max-height] duration-500 ease-sovereign"
+		aria-hidden="true"
+	>
+		<ul class="px-6 pb-8 flex flex-col gap-4" role="list">
+			{
+				navLinks.map((link) => (
+					<li>
+						<a
+							href={link.href}
+							class="block text-base tracking-[0.2em] uppercase text-mist transition-colors duration-300 hover:text-gold py-2 focus-visible:ring-2 focus-visible:ring-gold"
+						>
+							{link.label}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+</nav>
+
+<script>
+	const nav = document.getElementById("main-nav");
+	const toggle = document.getElementById("mobile-menu-toggle");
+	const menu = document.getElementById("mobile-menu");
+	const line1 = document.getElementById("menu-line-1");
+	const line2 = document.getElementById("menu-line-2");
+	const line3 = document.getElementById("menu-line-3");
+
+	let isOpen = false;
+
+	let lastScroll = 0;
+	let isScrolled = false;
+
+	const updateNavStyle = (scrollY: number) => {
+		if (!nav) return;
+
+		const shouldBeScrolled = scrollY > 80;
+
+		if (shouldBeScrolled !== isScrolled) {
+			isScrolled = shouldBeScrolled;
+			if (isScrolled) {
+				nav.style.backgroundColor = "rgba(5, 5, 7, 0.82)";
+				nav.style.backdropFilter = "blur(20px)";
+				// @ts-expect-error Safari support
+				nav.style.webkitBackdropFilter = "blur(20px)";
+				nav.style.borderBottomColor = "rgba(17, 17, 24, 0.8)";
+			} else {
+				nav.style.backgroundColor = "transparent";
+				nav.style.backdropFilter = "none";
+				// @ts-expect-error Safari support
+				nav.style.webkitBackdropFilter = "none";
+				nav.style.borderBottomColor = "transparent";
+			}
+		}
+
+		if (scrollY > lastScroll && scrollY > 300) {
+			nav.style.transform = "translateY(-100%)";
+		} else {
+			nav.style.transform = "translateY(0)";
+		}
+
+		lastScroll = scrollY;
+	};
+
+	window.addEventListener("scroll", () => updateNavStyle(window.scrollY), {
+		passive: true,
+	});
+
+	updateNavStyle(window.scrollY);
+
+	if (toggle && menu) {
+		toggle.addEventListener("click", () => {
+			isOpen = !isOpen;
+			toggle.setAttribute("aria-expanded", String(isOpen));
+			menu.setAttribute("aria-hidden", String(!isOpen));
+
+			if (isOpen) {
+				menu.style.maxHeight = `${menu.scrollHeight}px`;
+			} else {
+				menu.style.maxHeight = "0";
+			}
+
+			if (line1 && line2 && line3) {
+				if (isOpen) {
+					line1.style.transform = "translateY(5px) rotate(45deg)";
+					line2.style.opacity = "0";
+					line3.style.transform = "translateY(-5px) rotate(-45deg)";
+				} else {
+					line1.style.transform = "";
+					line2.style.opacity = "1";
+					line3.style.transform = "";
+				}
+			}
+		});
+
+		menu.querySelectorAll("a").forEach((link) => {
+			link.addEventListener("click", () => {
+				isOpen = false;
+				toggle.setAttribute("aria-expanded", "false");
+				menu.setAttribute("aria-hidden", "true");
+				menu.style.maxHeight = "0";
+				if (line1 && line2 && line3) {
+					line1.style.transform = "";
+					line2.style.opacity = "1";
+					line3.style.transform = "";
+				}
+			});
+		});
+	}
+</script>
