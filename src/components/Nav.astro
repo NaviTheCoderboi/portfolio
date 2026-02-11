@@ -10,7 +10,7 @@ const navLinks = [
 <nav
 	id="main-nav"
 	class="fixed top-0 left-0 right-0 z-50"
-	style="transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.5s ease, backdrop-filter 0.5s ease, border-color 0.5s ease; border-bottom: 1px solid transparent;"
+	style="transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); background-color: rgba(5, 5, 7, 0.82); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(17, 17, 24, 0.8);"
 	aria-label="Primary navigation"
 >
 	<div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between">
@@ -89,29 +89,9 @@ const navLinks = [
 	let isOpen = false;
 
 	let lastScroll = 0;
-	let isScrolled = false;
 
 	const updateNavStyle = (scrollY: number) => {
 		if (!nav) return;
-
-		const shouldBeScrolled = scrollY > 80;
-
-		if (shouldBeScrolled !== isScrolled) {
-			isScrolled = shouldBeScrolled;
-			if (isScrolled) {
-				nav.style.backgroundColor = "rgba(5, 5, 7, 0.82)";
-				nav.style.backdropFilter = "blur(20px)";
-				// @ts-expect-error Safari support
-				nav.style.webkitBackdropFilter = "blur(20px)";
-				nav.style.borderBottomColor = "rgba(17, 17, 24, 0.8)";
-			} else {
-				nav.style.backgroundColor = "transparent";
-				nav.style.backdropFilter = "none";
-				// @ts-expect-error Safari support
-				nav.style.webkitBackdropFilter = "none";
-				nav.style.borderBottomColor = "transparent";
-			}
-		}
 
 		if (scrollY > lastScroll && scrollY > 300) {
 			nav.style.transform = "translateY(-100%)";

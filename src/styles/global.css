@@ -85,11 +85,6 @@ body {
     -webkit-tap-highlight-color: transparent;
 }
 
-::selection {
-    background-color: var(--color-gold-muted);
-    color: var(--color-ivory);
-}
-
 [data-reveal] {
     opacity: 0;
     transform: translateY(2rem);
